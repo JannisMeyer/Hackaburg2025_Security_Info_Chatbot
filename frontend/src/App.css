@@ -70,3 +70,8 @@
 .input-area button:hover {
   background-color: #0055aa;
 }
+
+.system.error {
+  color: red;
+  font-weight: bold;
+}
