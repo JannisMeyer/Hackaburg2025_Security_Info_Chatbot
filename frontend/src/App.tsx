@@ -103,6 +103,8 @@ function App() {
 
     // define output area
     <div className="container">
+      <div className="banner">ComplianceGPT</div>
+      
       <div ref={output} className="output">
         {messages.map((msg, index) => ( // map messages to message ui elements
           <div
