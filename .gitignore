@@ -1,0 +1,94 @@
+# Python
+# Compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Distribution / packaging
+.Python
+env/
+venv/
+.venv/
+build/
+develop-eggs/
+dist/
+eggs/
+.eggs/
+*.egg-info/
+.install_data
+.root
+.tox/
+.env/ # Common for general environment files
+pip-wheel-metadata/
+share/python-wheels/
+*.manifest
+*.dist-info/
+
+# Unit test / coverage reports
+.coverage
+.coverage.*
+.pytest_cache/
+htmlcov/
+.nox/
+
+# Editors / IDEs
+.idea/                  # JetBrains IDEs (PyCharm, IntelliJ)
+.vscode/                # VS Code
+*.iml                   # IntelliJ IDEA module files
+*.swp                   # Vim swap files
+*~                      # Emacs backup files
+.#* # Emacs lock files
+
+# OS generated files
+.DS_Store               # macOS
+.Trashes                # macOS
+Thumbs.db               # Windows
+ehthumbs.db             # Windows
+Icon?                   # macOS
+$RECYCLE.BIN/           # Windows
+*.log
+*.sqlite3
+*.db
+*.bak
+*.bak.*
+core.*
+
+# Python data science / ML related (Given your data science background)
+.ipynb_checkpoints/     # Jupyter Notebook checkpoints
+profile_*.py            # Python profiling
+*.pstat                 # Python profiling
+*.pyprof                # Python profiling
+.mypy_cache/            # Mypy static type checker
+.ruff_cache/            # Ruff linter/formatter cache
+.pytest_cache/          # Pytest cache
+
+# Environments created by tools like pipenv, poetry, etc.
+# These typically create virtual environments outside the project directory by default,
+# but if they create them inside, they should be ignored.
+Pipfile.lock
+poetry.lock
+
+# Specific to local development / configuration (adjust as needed)
+*.local.py              # Example: local settings file not committed
+.env                    # Environment variables (dotenv files)
+.flaskenv               # Flask environment variables
+.git-credentials
+.aws/credentials        # AWS credentials (if accidentally placed in project)
+.azure/                 # Azure related files
+.gcloud/                # Google Cloud related files
+*.pem                   # Private keys
+*.key                   # Private keys
+*.env.local             # Specific local env file
+*.env.*.local           # More specific local env files
+
+# Docker
+.dockerignore
+Dockerfile.local
+docker-compose.local.yml
+
+# Kubernetes
+.kube/                  # Kubernetes config (if accidentally placed in project)
+
+# Build artifacts
+target/
