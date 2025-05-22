@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat-Like Interface</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .output {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .input-area {
+      display: flex;
+      padding: 10px;
+      background-color: #eeeeee;
+      border-top: 1px solid #ccc;
+    }
+
+    #input {
+      flex: 1;
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #sendBtn {
+      margin-left: 10px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #sendBtn:hover {
+      background-color: #0055aa;
+    }
+  </style>
+</head>
+<body>
+  <div class="output" id="output">
+    <p><strong>System:</strong> Hello! How can I help you?</p>
+  </div>
+
+  <div class="input-area">
+    <input type="text" id="input" placeholder="Type your message here..." />
+    <button id="sendBtn">Send</button>
+  </div>
+
+  <script>
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const sendBtn = document.getElementById('sendBtn');
+
+    sendBtn.addEventListener('click', () => {
+      const text = input.value.trim();
+      if (text) {
+        const userMessage = document.createElement('p');
+        userMessage.innerHTML = `<strong>You:</strong> ${text}`;
+        output.appendChild(userMessage);
+        input.value = '';
+        output.scrollTop = output.scrollHeight;
+      }
+    });
+  </script>
+</body>
+</html>
