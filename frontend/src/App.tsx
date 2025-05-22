@@ -1,6 +1,7 @@
 // ----- defines logic for page -----
 
 import { useRef, useState, useEffect } from 'react';
+import { io, Socket } from 'socket.io-client';
 import './App.css';
 
 type Message = {
@@ -9,6 +10,7 @@ type Message = {
   m_error: boolean;
 };
 
+// region app
 function App() {
 
   // function to handle/display messages, collects them in "messages" list and uses classes defined in App.css to
@@ -19,42 +21,41 @@ function App() {
   const [input, setInput] = useState('');
 
   const output = useRef<HTMLDivElement | null>(null);
-  const socket = useRef<WebSocket | null>(null);
+  const socket = useRef<Socket | null>(null);
 
-  useEffect(() => { // code to be executed once th page is rendered
-    // create a dummy web socket (echo server) for testing
-    socket.current = new WebSocket('wss://echo.websocket.org');
+  // execute once page is rendered
+  useEffect(() => {
+    socket.current = io('http://10.8.7.46:5001', {
+      reconnectionAttempts: 5,
+      transports: ['websocket'],
+    });
 
-    // define socket methods
-    socket.current.onopen = () => {
-      console.log('WebSocket connected');
-    };
+    // define socket events
+    socket.current.on('connect', () => {
+      console.log('Socket.IO connected, id:', socket.current?.id);
+    });
 
-    socket.current.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data); // parse message JSON object
+    socket.current.on('message', (data) => {
 
-        if (typeof data === 'object' && data.text && data.from === 'user') { // input message from user to be echoed
-          setMessages(prev => [...prev, { m_sender: 'system', m_text: data.text, m_error: false }]);
-        } else {
-          console.log('Unknown message format:', data);
-        }
-      } catch (e) {
-        console.log('Non-json message: ', event.data); // for errors or internal system messages
+      // differentiate between messages from the user (JSON) from the socket (non-JSON)
+      if (typeof data === 'object' && data.text && data.from === 'user') {
+        setMessages(prev => [...prev, { m_sender: 'system', m_text: data.text, m_error: false }]);
+      } else {
+        console.log('Data of unknown message format:', data);
       }
-    };
+    });
 
-    socket.current.onerror = (event) => {
-      console.error('WebSocket error: ', event);
-    };
+    socket.current.on('connect_error', (err) => {
+      console.error('Connection error:', err);
+    });
 
-    socket.current.onclose = () => {
-      console.log('WebSocket disconnected');
-    };
+    socket.current.on('disconnect', () => {
+      console.log('Socket.IO disconnected');
+    });
 
-    // cleanup when page is closed
+    // cleanup on unrender
     return () => {
-      socket.current?.close();
+      socket.current?.disconnect();
     };
   }, []);
 
@@ -67,11 +68,11 @@ function App() {
     setMessages(prev => [...prev, { m_sender: 'user', m_text: trimmed, m_error: false }]);
     
     // send message to the websocket
-    if (socket.current && socket.current.readyState === WebSocket.OPEN) {
-      socket.current.send(JSON.stringify({ // send message to the server internally, not of Message type!
+    if (socket.current && socket.current.connected) {
+      socket.current.send({ // send JSON message to the socket (not of Message type!)
         from: 'user',
         text: "You said: " + trimmed
-      }));
+      });
     } else {
       // show error immediately if socket closed
       setMessages(prev => [...prev, {
@@ -98,13 +99,14 @@ function App() {
     }
   };
 
+  // region ui
   // define actual page layout using classes from App.css
   return (
 
     // define output area
     <div className="container">
       <div className="banner">ComplianceGPT</div>
-      
+
       <div ref={output} className="output">
         {messages.map((msg, index) => ( // map messages to message ui elements
           <div
@@ -122,7 +124,7 @@ function App() {
           value={input}
           onChange={(e) => setInput(e.target.value)} // display input
           onKeyDown={handleKeyDown}
-          placeholder="Type your message here..."
+          placeholder="Type..."
         />
         <button onClick={sendMessage}>Send</button>
       </div>
