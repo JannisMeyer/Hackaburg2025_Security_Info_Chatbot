@@ -19,8 +19,7 @@ kg = Neo4jGraph(
 def get_list_of_products() -> list[str]:
     """Returns all product names."""
     query = "MATCH (p:Product) RETURN p.name"
-    product_names = \
-        [p['p.name'] for p in kg.query(query)]
+    product_names = [p["p.name"] for p in kg.query(query)]
 
     return product_names
 
@@ -34,20 +33,28 @@ def get_product_vulnerability(input: str) -> str:
     query = f"""
         match (:Product {{name:'{input}'}})-[:HAS_VERSION]->(pv:ProductVersion)-[:HAS_VULNERABILITY]->(v:Vulnerability) return pv.full_name as product_version, v.description as description
     """
-    vulnerabilities = kg.query(query)
+    try:
+        vulnerabilities = kg.query(query)
 
-    vulnerabilities_md = f"Vulnabilities of {input} by product version\n\n"
-    current_version = ""
-    vulnability_idx = 0
+        vulnerabilities_md = f"Vulnabilities of {input} by product version\n\n"
+        current_version = ""
+        vulnability_idx = 0
 
-    for vulnability in vulnerabilities:
-        if current_version != vulnability['product_version']:
-            current_version = vulnability['product_version']
-            vulnability_idx = 0
+        for vulnability in vulnerabilities:
+            if current_version != vulnability["product_version"]:
+                current_version = vulnability["product_version"]
+                vulnability_idx = 0
 
-            vulnerabilities_md += f"## product version: {current_version}\n\n"
+                vulnerabilities_md += f"## product version: {current_version}\n\n"
 
-        vulnerabilities_md += f"### {vulnability_idx} \n\n{vulnability['description']}\n\n"
-        vulnability_idx += 1
+            vulnerabilities_md += (
+                f"### {vulnability_idx} \n\n{vulnability['description']}\n\n"
+            )
+            vulnability_idx += 1
+        return vulnerabilities_md
+    except Exception as e:
+        print(e)
+        return "for some reason this did not work :("
 
-    return vulnerabilities_md
+
+print(get_product_vulnerability("PCV100-F200-B25-V1D-6011-6720"))
