@@ -39,7 +39,7 @@ function App() {
 
       // differentiate between messages from the user (JSON) from the socket (non-JSON)
       if (typeof data === 'object' && data.text && data.from === 'user') {
-        setMessages(prev => [...prev, { m_sender: 'system', m_text: data.text, m_error: false }]);
+        setMessages(prev => [...prev, { m_sender: 'system', m_text: 'You said: ' + data.text, m_error: false }]);
       } else {
         console.log('Data of unknown message format:', data);
       }
@@ -71,7 +71,7 @@ function App() {
     if (socket.current && socket.current.connected) {
       socket.current.send({ // send JSON message to the socket (not of Message type!)
         from: 'user',
-        text: "You said: " + trimmed
+        text: trimmed
       });
     } else {
       // show error immediately if socket closed
