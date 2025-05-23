@@ -1,0 +1,17 @@
+[project]
+name = "app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "langchain[google-genai]>=0.3.25",
+    "langgraph>=0.4.5",
+    "langsmith>=0.3.42",
+    "pip>=25.1.1",
+]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
