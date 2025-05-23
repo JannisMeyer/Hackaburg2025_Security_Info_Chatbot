@@ -1,7 +1,11 @@
 from typing import Annotated
+from typing import Any
 
 from typing_extensions import TypedDict
 from langgraph.checkpoint.memory import InMemorySaver
+from langchain_core.runnables.config import (
+    RunnableConfig,
+)
 
 
 from langgraph.graph.message import add_messages
@@ -22,12 +26,11 @@ class App:
             prompt="call the appropriate function",
         )
 
-    def query(self, input: str, id: str) -> str:
-        config = {"configurable": {"thread_id": id}}
-        return (
-            self.graph.invoke(
-                {"messages": [{"role": "user", "content": input}]}, config=config
-            )
-            .get("messages")[-1]
-            .content
-        )
+    def query(self, input: str, id: str) -> str | Any:
+        config: RunnableConfig = {"configurable": {"thread_id": id}}
+        messages = self.graph.invoke(
+            {"messages": [{"role": "user", "content": input}]}, config=config
+        ).get("messages")
+        if messages is not None:
+            return messages[-1].content
+        return None
