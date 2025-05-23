@@ -32,7 +32,13 @@ function App() {
   useEffect(() => {
 
     // define socket
-    socket.current = io('http://10.8.7.46:5001', {
+    let socket_url = import.meta.env.VITE_SOCKET_URL
+    if (!socket_url) {
+      console.error('VITE_SOCKET_URL must be defined in .env file!');
+      return;
+    }
+    
+    socket.current = io(socket_url, {
       reconnectionAttempts: 5,
       transports: ['websocket'],
     });
