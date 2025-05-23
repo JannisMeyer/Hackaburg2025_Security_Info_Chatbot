@@ -33,6 +33,22 @@
   gap: 10px;
 }
 
+/* layout loading animation */
+.loader {
+  margin: 10px auto;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* layout message */
 .message {
   max-width: 60%;
@@ -97,4 +113,11 @@
 /* layout input button when hovered */
 .input-area button:hover {
   background-color: #0055aa;
+}
+
+.input-area button:disabled {
+  background-color: #999999;  /* Grauer Hintergrund */
+  color: #cccccc;             /* Hellerer Text */
+  cursor: not-allowed;        /* Verboten-Cursor */
+  pointer-events: none;       /* Verhindert Klicks */
 }
