@@ -1,2 +1,7 @@
+
 # project installed packages
 node_modules/
+
+app/src/__pycache__
+app/.env
+
