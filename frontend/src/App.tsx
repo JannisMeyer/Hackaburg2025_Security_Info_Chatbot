@@ -38,12 +38,83 @@ function App() {
             reconnectionAttempts: 5,
             transports: ["websocket"],
         });
-
         // define socket events
         socket.current.on("connect", () => {
             console.log("Socket.IO connected, id:", socket.current?.id);
         });
+  // function to handle/display messages, collects them in "messages" list and uses classes defined in App.css to
+  // display them
+  const [messages, setMessages] = useState<Message[]>([
+    { m_sender: 'system', m_text: 'Hello! How can I help you?', m_error: false }, // initial message
+  ]);
+  const [input, setInput] = useState('');
 
+  // refs and states (always use "use..." for DOM elements as these get rerendered)
+  const output = useRef<HTMLDivElement | null>(null);
+  const socket = useRef<Socket | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [inputIsEmpty, setInputIsEmpty] = useState(true);
+  const [dataWasEchoed, setDataWasEchoed] = useState(true);
+
+  // execute once page is rendered
+  useEffect(() => {
+
+    // define socket
+    let socket_url = import.meta.env.VITE_SOCKET_URL
+    if (!socket_url) {
+      console.error('VITE_SOCKET_URL must be defined in .env file!');
+      return;
+    }
+    
+    socket.current = io(socket_url, {
+      reconnectionAttempts: 5,
+      transports: ['websocket'],
+    });
+
+    // define socket events
+    socket.current.on('connect', () => {
+      console.log('Socket.IO connected, id:', socket.current?.id);
+    });
+
+    socket.current.on('message', (data) => {
+      // differentiate between messages from the user (JSON) from the socket (non-JSON)
+      if ((typeof data === 'object') && data.text && data.from === 'user') {
+
+        // display message
+        setMessages(prev => [...prev, { m_sender: 'system', m_text: 'You said: ' + data.text, m_error: false }]);
+        
+        // enable button again
+        setDataWasEchoed(true);
+        setInputIsEmpty(true);
+        setLoading(false);
+
+        if (buttonRef.current) {
+          buttonRef.current.style.backgroundColor = '#0066cc';
+          buttonRef.current.style.color = '#0066cc';
+        }
+      } else {
+        console.log('Data of unknown message format:', data);
+      }
+    });
+
+    socket.current.on('connect_error', (err) => {
+      console.error('Connection error:', err);
+    });
+
+    socket.current.on('disconnect', () => {
+      console.log('Socket.IO disconnected');
+    });
+
+    // cleanup on unrender
+    return () => {
+      socket.current?.disconnect();
+    };
+  }, []);
+
+  // function to handle messages
+  const sendMessage = () => {
+    if(!inputIsEmpty && dataWasEchoed) {
         socket.current.on("message", (data) => {
             // differentiate between messages from the user (JSON) from the socket (non-JSON)
             console.log(typeof data);
