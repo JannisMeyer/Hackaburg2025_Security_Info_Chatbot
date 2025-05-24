@@ -97,35 +97,6 @@ function App() {
   // function to handle messages
   const sendMessage = () => {
     if(!inputIsEmpty && dataWasEchoed) {
-
-      // disable button
-      setLoading(true);
-      setDataWasEchoed(false);
-
-      if (buttonRef.current) {
-        buttonRef.current.style.backgroundColor = 'grey';
-        buttonRef.current.style.color = 'grey';
-      }
-
-      // display user message immediately
-      const trimmed = input.trim();
-      if (!trimmed) return;
-
-      setMessages(prev => [...prev, { m_sender: 'user', m_text: trimmed, m_error: false }]);
-      
-      // send message to the websocket
-      if (socket.current && socket.current.connected) {
-
-        socket.current.send({ // send JSON message to the socket (not of Message type!)
-          from: 'user',
-          text: trimmed
-        });
-
-        // define socket events
-        socket.current.on("connect", () => {
-            console.log("Socket.IO connected, id:", socket.current?.id);
-        });
-
         socket.current.on("message", (data) => {
             // differentiate between messages from the user (JSON) from the socket (non-JSON)
             console.log(typeof data);
