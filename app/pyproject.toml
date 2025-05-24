@@ -5,9 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "flask>=3.1.1",
+    "flask-socketio>=5.5.1",
+    "langchain-community>=0.3.24",
     "langchain[google-genai]>=0.3.25",
     "langgraph>=0.4.5",
     "langsmith>=0.3.42",
+    "neo4j>=5.28.1",
     "pip>=25.1.1",
 ]
 
